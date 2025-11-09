@@ -1,0 +1,88 @@
+Assignment 5
+<!DOCTYPE html>
+<html>
+<head> 
+  <title>My Portfolio Website</title>
+
+  <style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #e9f2fb;
+}
+
+header {
+  background-color: #0078eb;
+  color: white;
+  padding: 20px 0;
+}
+
+nav {
+  background-color: #333;
+  padding: 10px 0;
+}
+
+nav a {
+  color: white;
+  margin: 0 20px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.grid {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.card {
+  background-color: #cfe0fa;
+  padding: 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  width: 80%;
+}
+
+footer {
+  background-color: #0078eb;
+  color: white;
+  padding: 20px 0;
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>My Portfolio</h1>
+  </header>
+  
+  <nav aria-label="primary">
+    <a>Home</a>
+    <a>Projects</a>
+    <a>About</a>
+    <a>Contact</a>
+  </nav>
+
+  <main class="grid">
+    <article class="card">
+      <h3>Project 1</h3>
+    </article>
+
+    <article class="card">
+      <h3>Project 2</h3>
+    </article>
+
+    <article class="card">
+      <h3>Project 3</h3>
+    </article>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 My Portfolio</p>
+  </footer>
+</body>
+</html>

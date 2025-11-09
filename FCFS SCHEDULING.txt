@@ -1,0 +1,58 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter the number of processes: ";
+    cin >> n;
+
+    int id[20], at[20], bt[20], ct[20], tat[20], wt[20];
+    double avg_tat = 0, avg_wt = 0;
+
+    cout << "Enter Arrival Time for " << n << " processes:\n";
+    for (int i = 0; i < n; i++) { 
+        cout << "P" << i + 1 << ": ";
+        cin >> at[i];
+        id[i] = i + 1;
+    }
+
+    cout << "Enter Burst Time for " << n << " processes:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << i + 1 << ": ";
+        cin >> bt[i];
+    }
+
+    // FCFS: sort by Arrival Time (keep original IDs tied to their AT/BT)
+    for (int i = 0; i < n - 1; i++)
+        for (int j = i + 1; j < n; j++)
+            if (at[i] > at[j]) {
+                swap(at[i], at[j]); swap(bt[i], bt[j]); swap(id[i], id[j]);
+            }
+
+    // Completion times
+    ct[0] = at[0] + bt[0];
+    for (int i = 1; i < n; i++)
+        ct[i] = (at[i] > ct[i-1]) ? at[i] + bt[i] : ct[i-1] + bt[i];
+
+    // TAT, WT, and averages
+    for (int i = 0; i < n; i++) {
+        tat[i] = ct[i] - at[i];
+        wt[i]  = tat[i] - bt[i];
+        avg_tat += tat[i];
+        avg_wt  += wt[i];
+    }
+
+    cout << "\n==============================================\n";
+    cout << "Process\tAT\tBT\tCT\tTAT\tWT\n";
+    cout << "==============================================\n";
+    for (int i = 0; i < n; i++)
+        cout << "P" << id[i] << "\t" << at[i] << "\t" << bt[i]
+             << "\t" << ct[i] << "\t" << tat[i] << "\t" << wt[i] << "\n";
+
+    cout << "==============================================\n";
+    cout.setf(ios::fixed); cout.precision(2);
+    cout << "Average Turnaround Time: " << (avg_tat / n) << "\n";
+    cout << "Average Waiting Time:    " << (avg_wt  / n) << "\n";
+    return 0;
+}

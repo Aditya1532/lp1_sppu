@@ -1,0 +1,90 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct P {
+    int id, at, bt, rt, ct, tat, wt;
+};
+
+int main() {
+    int n, tq;
+    cout << "Enter the number of processes: ";
+    cin >> n;
+    cout << "Enter the time quantum: ";
+    cin >> tq;
+
+    P p[50];
+    for (int i = 0; i < n; i++) {
+        p[i].id = i + 1;
+        cout << "Enter arrival time of Process " << i + 1 << ": ";
+        cin >> p[i].at;
+        cout << "Enter burst time of Process " << i + 1 << ": ";
+        cin >> p[i].bt;
+        p[i].rt = p[i].bt;
+        p[i].ct = p[i].tat = p[i].wt = 0;
+    }
+
+    // Simple selection sort by arrival time (keeps input order on ties)
+    for (int i = 0; i < n - 1; i++) {
+        int m = i;
+        for (int j = i + 1; j < n; j++)
+            if (p[j].at < p[m].at) m = j;
+        if (m != i) { P t = p[i]; p[i] = p[m]; p[m] = t; }
+    }
+
+    queue<int> q;
+    int marked[50] = {0};
+    int cur = 0, done = 0;
+    double sumWT = 0, sumTAT = 0;
+
+    q.push(0); marked[0] = 1;
+
+    cout << "\n===== Round Robin Scheduling Simulation =====\n";
+
+    while (done < n) {
+        if (q.empty()) {                // if CPU idle, pick next unfinished
+            for (int i = 0; i < n; i++)
+                if (p[i].rt > 0) { q.push(i); marked[i] = 1; break; }
+        }
+
+        int i = q.front(); q.pop();
+
+        if (cur < p[i].at) cur = p[i].at;   // wait until it arrives
+
+        int run = (p[i].rt > tq) ? tq : p[i].rt;
+        p[i].rt -= run;
+        cur += run;
+
+        // enqueue any newly arrived processes up to current time
+        for (int k = 0; k < n; k++) {
+            if (!marked[k] && p[k].at <= cur && p[k].rt > 0) {
+                q.push(k); marked[k] = 1;
+            }
+        }
+
+        if (p[i].rt > 0) {
+            q.push(i); // not finished, go to back
+        } else {
+            p[i].ct  = cur;
+            p[i].tat = p[i].ct - p[i].at;
+            p[i].wt  = p[i].tat - p[i].bt;
+            sumWT  += p[i].wt;
+            sumTAT += p[i].tat;
+            done++;
+        }
+    }
+
+    cout << "\n==============================================\n";
+    cout << "PID\tAT\tBT\tCT\tTAT\tWT\n";
+    cout << "==============================================\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << p[i].id << "\t"
+             << p[i].at << "\t" << p[i].bt << "\t"
+             << p[i].ct << "\t" << p[i].tat << "\t" << p[i].wt << "\n";
+    }
+    cout << "==============================================\n";
+    cout.setf(ios::fixed); cout.precision(2);
+    cout << "Average Turnaround Time: " << (sumTAT / n) << "\n";
+    cout << "Average Waiting Time:    " << (sumWT / n) << "\n";
+    return 0;
+}

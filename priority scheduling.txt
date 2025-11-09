@@ -1,0 +1,69 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct P { int id, bt, at, pr, wt, ct, tat; bool done; };
+
+int main() {
+    int n; 
+    cout << "Enter number of processes: ";
+    cin >> n;
+
+    P p[20];
+    cout << "Enter Process IDs: ";
+    for (int i = 0; i < n; i++) cin >> p[i].id;
+
+    cout << "Enter Burst Times: ";
+    for (int i = 0; i < n; i++) cin >> p[i].bt;
+
+    cout << "Enter Arrival Times: ";
+    for (int i = 0; i < n; i++) cin >> p[i].at;
+
+    cout << "Enter Priorities (lower = higher priority): ";
+    for (int i = 0; i < n; i++) { cin >> p[i].pr; p[i].done = false; }
+
+    // Selection sort by arrival time (stable for equal AT if input order preserved)
+    for (int i = 0; i < n - 1; i++) {
+        int m = i;
+        for (int j = i + 1; j < n; j++)
+            if (p[j].at < p[m].at) m = j;
+        if (m != i) { P t = p[i]; p[i] = p[m]; p[m] = t; }
+    }
+
+    int t = 0, finished = 0;
+    double sumWT = 0, sumTAT = 0;
+
+    cout << "\n===== Priority Scheduling Simulation =====\n";
+
+    while (finished < n) {
+        int idx = -1, bestPr = 1e9;
+        for (int i = 0; i < n; i++) {
+            if (!p[i].done && p[i].at <= t && p[i].pr < bestPr) {
+                bestPr = p[i].pr; idx = i;
+            }
+        }
+        if (idx == -1) { t++; continue; }              // CPU idle
+
+        t += p[idx].bt;                                 // run to completion
+        p[idx].ct  = t;
+        p[idx].tat = p[idx].ct - p[idx].at;
+        p[idx].wt  = p[idx].tat - p[idx].bt;
+        p[idx].done = true;
+        finished++;
+        sumWT  += p[idx].wt;
+        sumTAT += p[idx].tat;
+    }
+
+    cout << "\n==============================================\n";
+    cout << "PID\tAT\tBT\tPR\tCT\tTAT\tWT\n";
+    cout << "==============================================\n";
+    for (int i = 0; i < n; i++) {
+        cout << p[i].id << "\t" << p[i].at << "\t" << p[i].bt << "\t"
+             << p[i].pr << "\t" << p[i].ct << "\t" << p[i].tat << "\t" << p[i].wt << "\n";
+    }
+    cout << "==============================================\n";
+    cout.setf(ios::fixed); cout.precision(2);
+    cout << "Average Turnaround Time: " << (sumTAT / n) << "\n";
+    cout << "Average Waiting Time:    " << (sumWT / n) << "\n";
+    return 0;
+}

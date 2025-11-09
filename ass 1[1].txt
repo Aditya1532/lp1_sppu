@@ -1,0 +1,88 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main(){
+    int n;
+    cout <<"Enter no of lines : ";
+    cin >> n;
+    cin.ignore();
+
+    string code[50];
+    cout <<"\nEnter your code line by line : ";
+    for(int i = 0; i < n; i++){
+        getline(cin, code[i]);
+    }
+
+    string symbol[20];
+    int address[20];
+    int syscount = 0;
+    int lc = 0;
+
+    cout <<"...............pass 1.................."<<endl;
+
+    for(int i = 0; i < n; i++){
+        string line = code[i];
+
+
+        if(line.substr(0, 5) == "START"){
+            lc = stoi(line.substr(6));
+            cout << line << " LC starts at = " << lc << endl;
+        }
+        else if (line.substr(0, 5) == "MOVER" || line.substr(0, 5) == "MOVEM" ||
+            line.substr(0, 3) == "ADD"   || line.substr(0, 3) == "SUB" ||
+            line.substr(0, 4) == "MULT"  || line.substr(0, 3) == "DIV"){
+            cout<< line <<" LC = "<< lc<< endl;
+            lc++;
+        }
+        else if (line.find("DS") != string::npos || line.find("DC") != string::npos) {
+            string label = line.substr(0, line.find(' '));
+            symbol[syscount] = label;
+            address[syscount] = lc;
+            cout << line << " -> Symbol = " << label << " at address = " << lc << endl;
+            syscount++;
+            lc++;
+            
+        }
+        else if(line == "END") {
+            cout<<line<<"  line end "<<endl;
+        }
+    }
+    cout<<"\n................symbol table.....................\n";
+    for(int i = 0; i < syscount; i++){
+        cout<<symbol[i]<<" \t "<<address[i]<<endl;
+    }
+    
+    cout << "\n===== PASS 2 =====\n";
+    for (int i = 0; i < n; i++) {
+        string line = code[i];
+
+        if (line.substr(0, 5) == "MOVER" || line.substr(0, 5) == "MOVEM" ||
+            line.substr(0, 3) == "ADD"   || line.substr(0, 3) == "SUB" ||
+            line.substr(0, 4) == "MULT"  || line.substr(0, 3) == "DIV") {
+            cout << "Instruction: " << line << " -> ";
+            for (int j = 0; j < syscount; j++) {
+                if (line.find(symbol[j]) != string::npos) {
+                    cout << "Uses address " << address[j];
+                }
+            }
+            cout << endl;
+        }
+    }
+
+    return 0;
+
+
+}
+
+
+example input
+START 200
+MOVER BREG, X
+SUB AREG, Y
+MOVEM AREG, Z
+X DS 1
+Y DC 4
+Z DS 1
+END

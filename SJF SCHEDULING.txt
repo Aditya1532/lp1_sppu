@@ -1,0 +1,58 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct P { int pid, at, bt, ct, tat, wt; };
+
+int main() {
+    int n; 
+    cout << "Enter the number of processes: ";
+    cin >> n;
+
+    P p[20];
+    cout << "Enter Arrival Time for " << n << " processes:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << i + 1 << ": ";
+        cin >> p[i].at;
+        p[i].pid = i + 1;
+    }
+    cout << "Enter Burst Time for " << n << " processes:\n";
+    for (int i = 0; i < n; i++) {
+        cout << "P" << i + 1 << ": ";
+        cin >> p[i].bt;
+    }
+
+    // Selection sort by Burst Time (keeps input order on ties)
+    for (int i = 0; i < n - 1; i++) {
+        int m = i;
+        for (int j = i + 1; j < n; j++)
+            if (p[j].bt < p[m].bt) m = j;
+        if (m != i) { P t = p[i]; p[i] = p[m]; p[m] = t; }
+    }
+
+    int t = 0; 
+    double sumTAT = 0, sumWT = 0;
+
+    // Compute CT, TAT, WT
+    for (int i = 0; i < n; i++) {
+        if (p[i].at > t) t = p[i].at;   // wait for arrival if needed
+        t += p[i].bt;
+        p[i].ct = t;
+        p[i].tat = p[i].ct - p[i].at;
+        p[i].wt  = p[i].tat - p[i].bt;
+        sumTAT += p[i].tat;
+        sumWT  += p[i].wt;
+    }
+
+    cout << "\n==============================================\n";
+    cout << "Process\tAT\tBT\tCT\tTAT\tWT\n";
+    cout << "==============================================\n";
+    for (int i = 0; i < n; i++)
+        cout << "P" << p[i].pid << "\t" << p[i].at << "\t" << p[i].bt
+             << "\t" << p[i].ct << "\t" << p[i].tat << "\t" << p[i].wt << "\n";
+    cout << "==============================================\n";
+    cout.setf(ios::fixed); cout.precision(2);
+    cout << "Average Turnaround Time: " << (sumTAT / n) << "\n";
+    cout << "Average Waiting Time:    " << (sumWT / n) << "\n";
+    return 0;
+}
