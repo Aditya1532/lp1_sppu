@@ -1,0 +1,24 @@
+FOR CPP=
+g++ filename.cpp
+./a.out
+
+
+python3 filename.py 
+
+touch filename.html
+firefox filename.html
+
+
+gcc filename.c
+./a.out
+
+don file create kara
+1.mathlib.c
+2.main.c
+
+
+after creating these file open terminal
+1) gcc -fPIC -c mathlib.c
+2)gcc -shared -o libmathlib.so mathlib.o
+3)gcc main.c -o main -ldl
+4)./main
