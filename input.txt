@@ -22,3 +22,29 @@ after creating these file open terminal
 2)gcc -shared -o libmathlib.so mathlib.o
 3)gcc main.c -o main -ldl
 4)./main
+
+INPUT FOR FIFO REPLCEMENT=
+Enter the number of frames: 3
+Enter the number of page references: 12
+Enter the page reference sequence (space separated):
+1 2 3 4 1 2 5 1 2 3 4 5
+
+
+
+
+input for fcfs scheduling=
+Enter the number of processes: 4
+Enter Arrival Time for 4 processes:
+P1: 0
+P2: 1
+P3: 2
+P4: 3
+Enter Burst Time for 4 processes:
+P1: 5
+P2: 3
+P3: 8
+P4: 6
+
+
+
+
